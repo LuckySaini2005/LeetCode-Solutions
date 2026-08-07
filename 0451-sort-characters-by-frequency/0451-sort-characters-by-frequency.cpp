@@ -13,14 +13,20 @@ public:
         v.push_back({x.first, x.second});
     }
 
-    sort(v.begin(), v.end(), [](auto &a, auto &b) {
-        return a.second > b.second;
-    });
+   for (int i = 0; i < v.size(); i++) {
+    for (int j = i + 1; j < v.size(); j++) {
+        if (v[i].second < v[j].second) {
+            swap(v[i], v[j]);
+        }
+    }
+    }
 
     string ans = "";
 
-    for (auto x : v) {
-        ans += string(x.second, x.first);
+    for (int i = 0; i < v.size(); i++) {
+        for (int j = 0; j < v[i].second; j++) {
+            ans += v[i].first;
+        }
     }
     return ans;
 
