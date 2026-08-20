@@ -1,46 +1,36 @@
 class Solution {
 public:
 
-    bool search(vector<int>& temp, vector<vector<int>>& dp) {
-        for(int i = 0; i < dp.size(); i++) {
-            if(temp.size() == dp[i].size()) {
-                if(temp == dp[i])
-                    return true;
-            }
+    void helper(vector<int>& nums, vector<vector<int>>& ans,
+                vector<int>& temp, int idx) {
+
+        // Every current temp is a valid subset
+        ans.push_back(temp);
+
+        for(int i = idx; i < nums.size(); i++) {
+
+            // Skip duplicate elements at the same level
+            if(i > idx && nums[i] == nums[i - 1])
+                continue;
+
+            temp.push_back(nums[i]);
+
+            helper(nums, ans, temp, i + 1);
+
+            temp.pop_back();
         }
-        return false;
-    }
-
-    void helper(vector<int>& nums, vector<vector<int>>& dp,
-                vector<int>& temp, int idx, int n) {
-
-        if(idx >= n) {
-            if(!search(temp, dp))
-                dp.push_back(temp);
-            return;
-        }
-
-        // Don't take
-        helper(nums, dp, temp, idx + 1, n);
-
-        // Take
-        temp.push_back(nums[idx]);
-        helper(nums, dp, temp, idx + 1, n);
-        temp.pop_back();
     }
 
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
 
-        sort(nums.begin(), nums.end());   
+        sort(nums.begin(), nums.end());
 
-        vector<vector<int>> dp;
+        vector<vector<int>> ans;
         vector<int> temp;
 
-        int n = nums.size();
+        helper(nums, ans, temp, 0);
 
-        helper(nums, dp, temp, 0, n);
-
-        return dp;
+        return ans;
     }
 };
 
