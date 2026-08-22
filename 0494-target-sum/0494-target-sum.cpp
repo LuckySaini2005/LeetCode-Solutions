@@ -1,23 +1,22 @@
 class Solution {
 public:
-    void helper(vector<int>& nums,int idx,int target,int &count){
+    int helper(vector<int>& nums,int idx,int target,vector<unordered_map<int,int>>& dp){
         if(idx < 0) {
-            if(target == 0)
-                count++;
-            return;
+            return target == 0;
         }
-
+        if(dp[idx].count(target))
+            return dp[idx][target];
         //taking + sign
-        helper(nums,idx-1,target-nums[idx],count);
-
+        int add = helper(nums, idx - 1,target - nums[idx], dp);
         //taking - sign
-        helper(nums,idx-1,target+nums[idx],count);
+        int subtract = helper(nums, idx - 1,target + nums[idx], dp);
+        return dp[idx][target] = add + subtract;
     }
     int findTargetSumWays(vector<int>& nums, int target) {
         int n=nums.size();
-        int count=0;
-        helper(nums,n-1,target,count);
-        return count;
+        vector<unordered_map<int,int>> dp(n);
+        return helper(nums,n-1,target,dp);
+        
     }
 };
 
