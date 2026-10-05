@@ -1,41 +1,33 @@
 class Solution {
-private:
-    int solve(int index, int currentSum, const vector<int>& stones, int target, vector<vector<int>>& dp) {
-        // Base case: processed all stones or reached exact target
-        if (index == stones.size() || currentSum == target) {
-            return currentSum;
-        }
-        // Return cached result if already calculated
-        if (dp[index][currentSum] != -1) {
-            return dp[index][currentSum];
-        }
-        // Choice 1: Exclude the current stone
-        int exclude = solve(index + 1, currentSum, stones, target, dp);
-        // Choice 2: Include the current stone (if it stays within target capacity)
-        int include = 0;
-        if (currentSum + stones[index] <= target) {
-            include = solve(index + 1, currentSum + stones[index], stones, target, dp);
-        }
-        // Store and return the maximum achievable subset sum
-        return dp[index][currentSum] = max(include, exclude);
-    }
 public:
     int lastStoneWeightII(vector<int>& stones) {
-        int totalSum = 0;
-        for (int stone : stones) {
-            totalSum += stone;
+        // Your code here
+
+        int totalSum = 0, n = stones.size();
+        
+        if(n==1)
+        return stones[0];
+
+        for(int i=0;i<n;i++){
+            totalSum+=stones[i];
         }
-        int target = totalSum / 2;
-        int n = stones.size();
 
-        // dp[index][currentSum] initialized to -1
-        vector<vector<int>> dp(n, vector<int>(target + 1, -1));
+        vector<bool>dp(totalSum/2+1,0);
+        dp[0] = 1;
 
-        // Find the maximum subset sum <= target starting from index 0
-        int s2 = solve(0, 0, stones, target, dp);
+        for(int i=0;i<n;i++){
+            for(int j = totalSum/2;j>=stones[i];j--){
+                dp[j] = dp[j] || dp[j-stones[i]];
+            }
+        }
 
-        // Result is S1 - S2 = (totalSum - S2) - S2
-        return totalSum - 2 * s2;
+        for(int i=totalSum/2;i>0;i--){
+            if(dp[i]){
+                return totalSum-2*i;
+            }
+        }
+
+        return 0;
     }
 };
 
